@@ -47,21 +47,10 @@ enum class OP_RESULT : int
     OP_RSLT_INVALID_USAGE
 };
 
-#ifdef _WIN32
-    #define CACHE_ALIGN __declspec(align(CACHE_LINE_SIZE))  
-#endif
-
-#if defined __APPLE__ || defined __linux__ 
-    #define CACHE_ALIGN __attribute__ ((aligned(cumbuffer_defines::CACHE_LINE_SIZE))) 
-#endif
+#define CACHE_ALIGN __declspec(align(CACHE_LINE_SIZE))  
 
 ///////////////////////////////////////////////////////////////////////////////
-#ifdef _WIN32
 class CACHE_ALIGN CumBuffer
-#endif
-#if defined __APPLE__ || defined __linux__ 
-class CumBuffer
-#endif
 {	
   public:
     CumBuffer() 
@@ -482,11 +471,8 @@ class CumBuffer
 
     uint64_t    m_CurHead; // 가장 최신 읽기의 마지막 위치
     uint64_t    m_CurTail; // 가장 최신 쓰기의 마지막 위치
-}
-#if defined __APPLE__ || defined __linux__ 
-CACHE_ALIGN 
-#endif
-;
+};
+
 
 #endif
 
