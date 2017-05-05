@@ -77,7 +77,7 @@ class CACHE_ALIGN CumBuffer
         try
         {
             //m_pBuffer = new char [m_BufferLen];
-			m_pBuffer = std::make_unique<char*>();
+			m_pBuffer = std::make_unique<char[]>(m_BufferLen);
         }
         catch (std::exception& e)
         {
@@ -465,7 +465,7 @@ class CACHE_ALIGN CumBuffer
 
     std::string m_strErrMsg;
     //char*       m_pBuffer;
-	std::unique_ptr<char*> m_pBuffer;
+	std::unique_ptr<char[]> m_pBuffer;
     size_t      m_BufferLen;
     size_t      m_CumulatedLen; // 저장된 데이터 길이
 
