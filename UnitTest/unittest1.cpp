@@ -87,9 +87,9 @@ namespace UnitTest
 			Assert::AreEqual(outputData, "test");
 		}
 
-		TEST_METHOD()
-		{
+		//TEST_METHOD()
+		//{
 
-		}
+		//}
 	};
 }

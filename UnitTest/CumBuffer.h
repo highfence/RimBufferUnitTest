@@ -107,6 +107,12 @@ class CACHE_ALIGN CumBuffer
         {
             // tail이 버퍼 끝을 지난 경우
 			opRet = CheckAppendDataSpaceAfterRotation(pData, nLen);
+
+			if (opRet == OP_RESULT::OP_RSLT_OK)
+			{
+				AppendDataAfterRotaion(pData, nLen);
+			}
+
 			return opRet;
         }
         else
@@ -155,7 +161,6 @@ class CACHE_ALIGN CumBuffer
 	}
 
 	// 림 버퍼가 한바퀴 돌고 난 후, (헤드가 테일보다 뒤에 있을 경우) 추가할 데이터만큼 공간이 남았는지 검사하는 함수.
-	// TODO :: 돌고 난뒤 직접 Append까지 하고 있는데, 리팩토링해주는 것이 좋지 않을까 싶음. 
 	OP_RESULT CheckAppendDataSpaceAfterRotation(const char* pAppendData, const size_t appendLength)
 	{
 		const auto space = m_CurHead - m_CurTail;
@@ -166,10 +171,6 @@ class CACHE_ALIGN CumBuffer
 			m_strErrMsg = "buffer full";
 			return OP_RESULT::OP_RSLT_BUFFER_FULL;
 		}
-		
-		memcpy(m_pBuffer.get() + m_CurTail, pAppendData, appendLength);
-		m_CurTail += appendLength;
-		m_CumulatedLen += appendLength;
 
 #ifdef CUMBUFFER_DEBUG
 			DebugPos(__LINE__);
@@ -468,6 +469,12 @@ class CACHE_ALIGN CumBuffer
 			return false;
 		}
 		return true;
+	}
+	void AppendDataAfterRotaion(const char* pAppendData, const size_t appendLength)
+	{
+		memcpy(m_pBuffer.get() + m_CurTail, pAppendData, appendLength);
+		m_CurTail += appendLength;
+		m_CumulatedLen += appendLength;
 	}
 
     std::string m_strErrMsg;
