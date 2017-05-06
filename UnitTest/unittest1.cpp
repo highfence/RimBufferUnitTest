@@ -133,11 +133,32 @@ namespace UnitTest
 			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
 
 			/* 버퍼 총 길이보다 큰 데이터를 집어 넣는 경우. */
+			const char* tooLargeData = "IsItTooLargeToAppend?";
+			const uint64_t tooLargeDataSize = strlen(tooLargeData);
+			memcpy(inputData, (void*)tooLargeData, tooLargeDataSize);
+
+			Assert::IsTrue(rimBuffer.GetCapacity() < tooLargeDataSize);
+			auto opRet = rimBuffer.Append(tooLargeDataSize, tooLargeData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_INVALID_LEN == opRet);
 
 			/* 버퍼 총 길이 만큼 데이터 삽입. */
+			const char* fitData = "ThisDataSize15!";
+			const int fitDataSize = strlen(fitData);
+			Assert::IsTrue(testBufferSize == fitDataSize);
+
+			memset(inputData, 0x00, sizeof(inputData));
+			memcpy(inputData, (void*)fitData, fitDataSize);
+			opRet = rimBuffer.Append(fitDataSize, fitData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
 
 			/* 삽입시 데이터가 꽉 차있는 경우. */
-
+			const char* overData = "BufferOver";
+			const int overDataSize = strlen(overData);
+			
+			memset(inputData, 0x00, sizeof(inputData));
+			memcpy(inputData, (void*)overData, overDataSize);
+			opRet = rimBuffer.Append(overDataSize, overData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_BUFFER_FULL== opRet);
 		}
 
 		// Append 함수가 로테이션한 뒤 상태에서 제대로 성공하는지 테스트.

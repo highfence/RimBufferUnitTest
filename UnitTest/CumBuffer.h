@@ -147,8 +147,6 @@ class CACHE_ALIGN CumBuffer
 	{
 		if (m_BufferLen < appendLength)
 		{
-			std::cerr << "[" << __func__ << "-" << __LINE__ << "] invalid len :" << appendLength << "\n";
-			m_strErrMsg = "invalid length";
 			return OP_RESULT::OP_RSLT_INVALID_LEN;
 		}
 		else if (m_BufferLen == m_CumulatedLen)
