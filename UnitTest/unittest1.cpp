@@ -103,14 +103,24 @@ namespace UnitTest
 			const uint64_t firstFreeSpaceSize = rimBuffer.GetCapacity() - firstInputDataSize;
 			memcpy(inputData, (void*)firstInputData, firstInputDataSize);
 
-			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Append(4, inputData));
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Append(firstInputDataSize, inputData));
 			Assert::AreEqual((uint64_t)0, rimBuffer.GetCurHeadPos());
 			Assert::AreEqual(firstInputDataSize, rimBuffer.GetCurTailPos());
 			Assert::AreEqual(firstFreeSpaceSize, rimBuffer.GetLinearFreeSpace());
 			Assert::AreEqual(firstFreeSpaceSize, rimBuffer.GetTotalFreeSpace());
 
 			/* 두 번째 Append 수행. */
+			const char* secondInputData = "Another";
+			const uint64_t secondInputDataSize = strlen(secondInputData);
+			const uint64_t secondFreeSpaceSize = firstFreeSpaceSize - secondInputDataSize;
+			memset(inputData, 0x00, sizeof(inputData));
+			memcpy(inputData, (void*)secondInputData, secondInputDataSize);
 
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Append(secondInputDataSize, secondInputData));
+			Assert::AreEqual((uint64_t)0, rimBuffer.GetCurHeadPos());
+			Assert::AreEqual(firstInputDataSize + secondInputDataSize, rimBuffer.GetCurTailPos());
+			Assert::AreEqual(secondFreeSpaceSize, rimBuffer.GetLinearFreeSpace());
+			Assert::AreEqual(secondFreeSpaceSize, rimBuffer.GetTotalFreeSpace());
 		}
 
 		// Append 함수가 RimBuffer의 로테이션을 하지 않은 상태에서 제대로 실패를 뱉는지 테스트.
