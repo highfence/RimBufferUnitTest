@@ -12,6 +12,7 @@ namespace UnitTest
 	{
 	public:
 		
+		// 교수님이 주신 기본 테스트 메소드.
 		TEST_METHOD(TestMethod1)
 		{
 			char data[100] = { 0, };
@@ -42,10 +43,9 @@ namespace UnitTest
 			Assert::AreEqual(buffering.GetCurTailPos(), (uint64_t)6);
 		}
 
-		// TODO :: 테스트 함수_조건으로 테스트 메소드 이름을 만들고, 많이 분할하여 테스트한다.
-		TEST_METHOD(TestMethod2)
+		// 멤버 함수를 기본적으로 테스트 해봄.
+		TEST_METHOD(Basic_Function_Test)
 		{
-			// 내가 만드는 테스트 메소드.
 			CumBuffer testBuf;
 			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == testBuf.Init());
 			
@@ -87,9 +87,59 @@ namespace UnitTest
 			Assert::AreEqual(outputData, "test");
 		}
 
-		//TEST_METHOD()
-		//{
+		// Append 함수가 RimBuffer의 로테이션을 하지 않은 상태에서 제대로 성공하는지 테스트.
+		TEST_METHOD(Append_Basic_Success)
+		{
+			char inputData[30] = { 0, };
+			const int testBufferSize = 15;
 
-		//}
+			CumBuffer rimBuffer;
+			/* 테스트용 작은 버퍼 사이즈로 생성. */
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
+
+
+		}
+
+		// Append 함수가 RimBuffer의 로테이션을 하지 않은 상태에서 제대로 실패를 뱉는지 테스트.
+		TEST_METHOD(Append_Basic_Fail)
+		{
+			
+		}
+
+		// Append 함수가 로테이션한 뒤 상태에서 제대로 성공하는지 테스트.
+		TEST_METHOD(Append_Beyond_Rotate_Success)
+		{
+
+		}
+
+		// Append 함수가 로테이션한 뒤 상태에서 제대로 실패를 뱉어내는 테스트.
+		TEST_METHOD(Append_Beyond_Rotate_Fail)
+		{
+
+		}
+
+		// GetData 함수가 원하는 데이터를 제대로 뱉어내는지 테스트.
+		TEST_METHOD(GetData_Basic_Success)
+		{
+
+		}
+
+		// GetData 함수가 제대로 실패 코드를 뱉어내는지 테스트.
+		TEST_METHOD(GetData_Basic_Fail)
+		{
+
+		}
+
+		// GetData 함수가 로테이션 이후 제대로 성공하는지 테스트.
+		TEST_METHOD(GetData_Beyond_Rotate_Success)
+		{
+
+		}
+
+		// GetData 함수가 로테이션 이후 제대로 실패 코드를 뱉는지 테스트.
+		TEST_METHOD(GetData_Beyond_Rotate_Fail)
+		{
+
+		}
 	};
 }

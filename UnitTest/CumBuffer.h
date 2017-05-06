@@ -55,7 +55,7 @@ class CACHE_ALIGN CumBuffer
   public:
     CumBuffer() 
     {
-        m_pBuffer = NULL; 
+        m_pBuffer = nullptr; 
 		m_CumulatedLen = 0;
 		m_CurHead = 0;
 		m_CurTail = 0;
@@ -438,7 +438,6 @@ class CACHE_ALIGN CumBuffer
     }
 
 	std::string GetErrMsg() { return m_strErrMsg; };
-
 
   private:
 	void GetDataOut(size_t nLen, char* pDataOut, bool bMoveHeadOnly, bool bPeek)
