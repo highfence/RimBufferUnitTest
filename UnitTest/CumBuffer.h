@@ -198,15 +198,8 @@ class CACHE_ALIGN CumBuffer
 			std::cout << "[" << __func__ << "-" << __LINE__ << "] nFirstBlockLen =" << nFirstBlockLen
 				<< "/nSecondBlockLen=" << nSecondBlockLen << "\n";
 #endif
-			if (nFirstBlockLen > 0)
-			{
-				memcpy(m_pBuffer.get() + m_CurTail, pAppendData, nFirstBlockLen);
-			}
-
-			memcpy(m_pBuffer.get(), pAppendData + (nFirstBlockLen), nSecondBlockLen);
-
-			m_CurTail = nSecondBlockLen;
-			m_CumulatedLen += appendLength;
+			AppendDataBeyondBufferEnd(pAppendData, appendLength, nFirstBlockLen, nSecondBlockLen);
+		
 #ifdef CUMBUFFER_DEBUG
 			DebugPos(__LINE__);
 #endif
@@ -327,7 +320,6 @@ class CACHE_ALIGN CumBuffer
 		std::cout << "[" << __func__ << "-" << __LINE__ << "] out data [" << pDataOut << "]\n";
 		DebugPos(__LINE__);
 #endif
-
 		return OP_RESULT::OP_RSLT_OK;
 	}
 
@@ -474,6 +466,22 @@ class CACHE_ALIGN CumBuffer
 	{
 		memcpy(m_pBuffer.get() + m_CurTail, pAppendData, appendLength);
 		m_CurTail += appendLength;
+		m_CumulatedLen += appendLength;
+	}
+	void AppendDataBeyondBufferEnd(
+		const char* pAppendData,
+		const size_t appendLength,
+		const int firstBlockLength,
+		const int secondBlockLength)
+	{
+		if (firstBlockLength > 0)
+		{
+			memcpy(m_pBuffer.get() + m_CurTail, pAppendData, firstBlockLength);
+		}
+
+		memcpy(m_pBuffer.get(), pAppendData + (firstBlockLength), secondBlockLength);
+
+		m_CurTail = secondBlockLength;
 		m_CumulatedLen += appendLength;
 	}
 
