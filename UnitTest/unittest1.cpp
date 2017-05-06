@@ -126,7 +126,18 @@ namespace UnitTest
 		// Append 함수가 RimBuffer의 로테이션을 하지 않은 상태에서 제대로 실패를 뱉는지 테스트.
 		TEST_METHOD(Append_Basic_Fail)
 		{
-			
+			char inputData[30] = { 0, };
+			const int testBufferSize = 15;
+
+			CumBuffer rimBuffer;
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
+
+			/* 버퍼 총 길이보다 큰 데이터를 집어 넣는 경우. */
+
+			/* 버퍼 총 길이 만큼 데이터 삽입. */
+
+			/* 삽입시 데이터가 꽉 차있는 경우. */
+
 		}
 
 		// Append 함수가 로테이션한 뒤 상태에서 제대로 성공하는지 테스트.

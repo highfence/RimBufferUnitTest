@@ -121,7 +121,8 @@ class CACHE_ALIGN CumBuffer
             {
 				opRet = AppendDataWhenRotate(pData, nLen);
 
-				if (opRet != OP_RESULT::OP_RSLT_OK) {
+				if (opRet != OP_RESULT::OP_RSLT_OK) 
+				{
 					return opRet;
 				}               
             }
