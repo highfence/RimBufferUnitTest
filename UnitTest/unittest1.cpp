@@ -86,5 +86,10 @@ namespace UnitTest
 			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == testBuf.GetData(4, outputData));
 			Assert::AreEqual(outputData, "test");
 		}
+
+		TEST_METHOD()
+		{
+
+		}
 	};
 }

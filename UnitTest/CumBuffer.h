@@ -55,11 +55,11 @@ class CACHE_ALIGN CumBuffer
   public:
     CumBuffer() 
     {
-        m_pBuffer=NULL; 
-        m_CumulatedLen=0;
-        m_CurHead=0;
-        m_CurTail=0;
-        m_BufferLen=0;
+        m_pBuffer = NULL; 
+		m_CumulatedLen = 0;
+		m_CurHead = 0;
+		m_CurTail = 0;
+		m_BufferLen = 0;
     }
 
     virtual ~CumBuffer() 
@@ -76,7 +76,6 @@ class CACHE_ALIGN CumBuffer
 
         try
         {
-            //m_pBuffer = new char [m_BufferLen];
 			m_pBuffer = std::make_unique<char[]>(m_BufferLen);
         }
         catch (std::exception& e)
@@ -90,7 +89,7 @@ class CACHE_ALIGN CumBuffer
         return OP_RESULT::OP_RSLT_OK;
     }
 
-    // Append계열 함수--------------------------------------------------------
+    // Append계열 함수-------------------------------------------------------
     OP_RESULT Append(const size_t nLen, const char* pData)
     {
 #ifdef CUMBUFFER_DEBUG
@@ -106,7 +105,7 @@ class CACHE_ALIGN CumBuffer
 
         if(m_CurTail < m_CurHead)
         {
-            //tail 이 버퍼 끝을 지난 경우
+            // tail이 버퍼 끝을 지난 경우
 			opRet = CheckAppendDataSpaceAfterRotation(pData, nLen);
 			return opRet;
         }
@@ -240,10 +239,8 @@ class CACHE_ALIGN CumBuffer
 		bool    bMoveHeadOnly = false)
 	{
 		// 인자 두개가 둘다 True인 경우를 허용하지 않음.
-		if (bPeek && bMoveHeadOnly)
+		if (!IsGetDataOptionRight(bMoveHeadOnly, bPeek))
 		{
-			std::cerr << "[" << __func__ << "-" << __LINE__ << "] invalid usage" << "\n";
-			m_strErrMsg = "invalid usage";
 			return OP_RESULT::OP_RSLT_INVALID_USAGE;
 		}
 
@@ -271,7 +268,7 @@ class CACHE_ALIGN CumBuffer
 			// 정상적으로 처리하는 경우.
 			else
 			{
-				GetDataProc(nLen, pDataOut, bMoveHeadOnly, bPeek);
+				GetDataOut(nLen, pDataOut, bMoveHeadOnly, bPeek);
 			}
 		}
 		// 림 버퍼가 로테이트 한 상태의 경우.
@@ -315,11 +312,11 @@ class CACHE_ALIGN CumBuffer
 			// 로테이트가 필요하지 않고 데이터를 줄 수 있는 경우.
 			else
 			{
-				GetDataProc(nLen, pDataOut, bMoveHeadOnly, bPeek);
+				GetDataOut(nLen, pDataOut, bMoveHeadOnly, bPeek);
 			}
 		}
 
-		// Peek가 아니라면, 현재 저장된 데이터를 빼준다.
+		// Peek가 아니라면, 현재 저장된 데이터에서 나간 데이터만큼 빼준다.
 		if (!bPeek)
 		{
 			m_CumulatedLen -= nLen;
@@ -451,7 +448,7 @@ class CACHE_ALIGN CumBuffer
 
 
   private:
-	void GetDataProc(size_t nLen, char* pDataOut, bool bMoveHeadOnly, bool bPeek)
+	void GetDataOut(size_t nLen, char* pDataOut, bool bMoveHeadOnly, bool bPeek)
 	{
 		if (!bMoveHeadOnly)
 		{
@@ -461,6 +458,16 @@ class CACHE_ALIGN CumBuffer
 		{
 			m_CurHead += nLen;
 		}
+	}
+	bool IsGetDataOptionRight(bool bMoveHeadOnly, bool bPeek)
+	{
+		if (bMoveHeadOnly && bPeek)
+		{
+			std::cerr << "[" << __func__ << "-" << __LINE__ << "] invalid usage" << "\n";
+			m_strErrMsg = "invalid usage";
+			return false;
+		}
+		return true;
 	}
 
     std::string m_strErrMsg;
