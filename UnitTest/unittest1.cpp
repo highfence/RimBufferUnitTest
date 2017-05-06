@@ -97,6 +97,15 @@ namespace UnitTest
 			/* 테스트용 작은 버퍼 사이즈로 생성. */
 			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
 
+			/* 테스트 버퍼 사이즈 이내에서 Append 수행. */
+			const uint64_t inputDataSize = 4;
+			const uint64_t freeSpaceSize = rimBuffer.GetCapacity() - inputDataSize;
+			memcpy(inputData, (void*)"test", inputDataSize);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Append(4, inputData));
+			Assert::AreEqual((uint64_t)0, rimBuffer.GetCurHeadPos());
+			Assert::AreEqual(inputDataSize, rimBuffer.GetCurTailPos());
+			Assert::AreEqual(freeSpaceSize, rimBuffer.GetLinearFreeSpace());
+			Assert::AreEqual(freeSpaceSize, rimBuffer.GetTotalFreeSpace());
 
 		}
 
