@@ -196,5 +196,17 @@ namespace UnitTest
 		{
 
 		}
+
+		// GetData시 옵션을 Peek을 주었을 때 제대로 작동하는지 테스트.
+		TEST_METHOD(GetData_TestPeek)
+		{
+			
+		}
+
+		// GetData시 옵션을 MoveHeadOnly를 주었을 때 제대로 작동하는지 테스트.
+		TEST_METHOD(GetData_TestHeadMoveOnly)
+		{
+			
+		}
 	};
 }
