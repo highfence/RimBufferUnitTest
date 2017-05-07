@@ -10,7 +10,7 @@ namespace UnitTest
 {		
 	TEST_CLASS(UnitTest1)
 	{
-	public:
+	public :
 		
 		// 교수님이 주신 기본 테스트 메소드.
 		TEST_METHOD(TestMethod1)
@@ -46,6 +46,7 @@ namespace UnitTest
 		// 멤버 함수를 기본적으로 테스트 해봄.
 		TEST_METHOD(Basic_Function_Test)
 		{
+			/* 초기 세팅. */
 			CumBuffer testBuf;
 			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == testBuf.Init());
 			
@@ -90,6 +91,7 @@ namespace UnitTest
 		// Append 함수가 RimBuffer의 로테이션을 하지 않은 상태에서 제대로 성공하는지 테스트.
 		TEST_METHOD(Append_Basic_Success)
 		{
+			/* 초기 세팅. */
 			char inputData[30] = { 0, };
 			const int testBufferSize = 15;
 
@@ -126,6 +128,7 @@ namespace UnitTest
 		// Append 함수가 RimBuffer의 로테이션을 하지 않은 상태에서 제대로 실패를 뱉는지 테스트.
 		TEST_METHOD(Append_Basic_Fail)
 		{
+			/* 초기 세팅. */
 			char inputData[30] = { 0, };
 			const int testBufferSize = 15;
 
@@ -161,26 +164,68 @@ namespace UnitTest
 			Assert::IsTrue(OP_RESULT::OP_RSLT_BUFFER_FULL== opRet);
 		}
 
-		// Append 함수가 로테이션한 뒤 상태에서 제대로 성공하는지 테스트.
-		TEST_METHOD(Append_Beyond_Rotate_Success)
-		{
-
-		}
-
-		// Append 함수가 로테이션한 뒤 상태에서 제대로 실패를 뱉어내는 테스트.
-		TEST_METHOD(Append_Beyond_Rotate_Fail)
-		{
-
-		}
-
 		// GetData 함수가 원하는 데이터를 제대로 뱉어내는지 테스트.
 		TEST_METHOD(GetData_Basic_Success)
 		{
+			/* 초기 세팅. */
+			char inputData[30] = { 0, };
+			const int testBufferSize = 15;
+
+			CumBuffer rimBuffer;
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
+
+			/* 빼내올 데이터 삽입. */
+			const char* testData = "InputForTest";
+			const int testDataSize = strlen(testData);
+			auto opRet = rimBuffer.Append(testDataSize, testData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+
+			/* 삽입한 데이터 중 "Input"을 GetData */
+			const char* charInput = "Input";
+			char outputData[30] = { 0, };
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.GetData(strlen(charInput), outputData));
+			Assert::AreEqual(charInput, outputData);
+			
+			/* 삽입한 데이터 중 "For"를 GetData */
+			const char* charFor = "For";
+			memset(outputData, 0x00, sizeof(outputData));
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.GetData(strlen(charFor), outputData));
+			Assert::AreEqual(charFor, outputData);
 
 		}
 
 		// GetData 함수가 제대로 실패 코드를 뱉어내는지 테스트.
 		TEST_METHOD(GetData_Basic_Fail)
+		{
+
+		}
+
+		// GetData시 옵션을 Peek을 주었을 때 제대로 작동하는지 테스트.
+		TEST_METHOD(GetData_TestPeek)
+		{
+			
+		}
+
+		// GetData시 옵션을 MoveHeadOnly를 주었을 때 제대로 작동하는지 테스트.
+		TEST_METHOD(GetData_TestHeadMoveOnly)
+		{
+			
+		}
+
+		// Append 함수가 로테이션한 뒤 상태에서 제대로 성공하는지 테스트.
+		TEST_METHOD(Append_Beyond_Rotate_Success)
+		{
+			char inputData[30] = { 0, };
+			const int testBufferSize = 15;
+
+			CumBuffer rimBuffer;
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
+
+			/* 로테이션 하도록 데이터를 넣고 뺴기. */
+		}
+
+		// Append 함수가 로테이션한 뒤 상태에서 제대로 실패를 뱉어내는 테스트.
+		TEST_METHOD(Append_Beyond_Rotate_Fail)
 		{
 
 		}
@@ -197,16 +242,6 @@ namespace UnitTest
 
 		}
 
-		// GetData시 옵션을 Peek을 주었을 때 제대로 작동하는지 테스트.
-		TEST_METHOD(GetData_TestPeek)
-		{
-			
-		}
 
-		// GetData시 옵션을 MoveHeadOnly를 주었을 때 제대로 작동하는지 테스트.
-		TEST_METHOD(GetData_TestHeadMoveOnly)
-		{
-			
-		}
 	};
 }
