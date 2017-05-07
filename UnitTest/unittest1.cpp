@@ -224,7 +224,27 @@ namespace UnitTest
 		// GetData시 옵션을 Peek을 주었을 때 제대로 작동하는지 테스트.
 		TEST_METHOD(GetData_TestPeek)
 		{
-			
+			/* 초기 세팅. */
+			char outputData[30] = { 0 };
+			const int testBufferSize = 15;
+			CumBuffer rimBuffer;
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
+
+			/* 테스트를 위한 데이터 삽입. */
+			const char* testData = "test";
+			auto opRet = rimBuffer.Append(strlen(testData), testData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+
+			/* 첫 번째 Peek 테스트. */
+			opRet = rimBuffer.GetData(strlen(testData), outputData, true, false);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+			Assert::AreEqual(outputData, testData);
+
+			/* 두 번째 Peek 테스트. (첫 번째와 같아야 함.) */
+			memset(outputData, 0x00, sizeof(outputData));
+			opRet = rimBuffer.GetData(strlen(testData), outputData, true, false);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+			Assert::AreEqual(outputData, testData);
 		}
 
 		// GetData시 옵션을 MoveHeadOnly를 주었을 때 제대로 작동하는지 테스트.
