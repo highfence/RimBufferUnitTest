@@ -60,7 +60,7 @@ namespace UnitTest
 			Assert::AreEqual((uint64_t)DEFAULT_BUFFER_LEN, testBuf.GetTotalFreeSpace());
 
 			// Append 후 테스트를 하기 위한 준비.
-			char inputData[100] = { 0, };
+			char inputData[100] = { 0 };
 			memset(inputData, 0x00, sizeof(inputData));
 			memcpy(inputData, (void*)"test", 4);
 
@@ -80,7 +80,7 @@ namespace UnitTest
 			Assert::AreEqual((uint64_t)(DEFAULT_BUFFER_LEN - 4), testBuf.GetLinearFreeSpace());
 
 			// Data꺼내오는 테스트를 위한 준비.
-			char outputData[100] = { 0, };
+			char outputData[100] = { 0 };
 			memset(outputData, 0x00, sizeof(outputData));
 
 			// GetData 테스트.
@@ -92,7 +92,7 @@ namespace UnitTest
 		TEST_METHOD(Append_Basic_Success)
 		{
 			/* 초기 세팅. */
-			char inputData[30] = { 0, };
+			char inputData[30] = { 0 };
 			const int testBufferSize = 15;
 
 			CumBuffer rimBuffer;
@@ -129,7 +129,7 @@ namespace UnitTest
 		TEST_METHOD(Append_Basic_Fail)
 		{
 			/* 초기 세팅. */
-			char inputData[30] = { 0, };
+			char inputData[30] = { 0 };
 			const int testBufferSize = 15;
 
 			CumBuffer rimBuffer;
@@ -168,7 +168,7 @@ namespace UnitTest
 		TEST_METHOD(GetData_Basic_Success)
 		{
 			/* 초기 세팅. */
-			char inputData[30] = { 0, };
+			char inputData[30] = { 0 };
 			const int testBufferSize = 15;
 
 			CumBuffer rimBuffer;
@@ -182,7 +182,7 @@ namespace UnitTest
 
 			/* 삽입한 데이터 중 "Input"을 GetData */
 			const char* charInput = "Input";
-			char outputData[30] = { 0, };
+			char outputData[30] = { 0 };
 			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.GetData(strlen(charInput), outputData));
 			Assert::AreEqual(charInput, outputData);
 			
@@ -197,7 +197,28 @@ namespace UnitTest
 		// GetData 함수가 제대로 실패 코드를 뱉어내는지 테스트.
 		TEST_METHOD(GetData_Basic_Fail)
 		{
+			/* 초기 세팅. */
+			char outputData[30] = { 0 };
+			const int testBufferSize = 15;
+			CumBuffer rimBuffer;
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
 
+			/* 버퍼에 데이터가 없을 경우 실패 테스트.*/
+			auto opRet = rimBuffer.GetData(1, outputData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_NO_DATA == opRet);
+
+			/* 테스트를 위한 데이터 삽입. */
+			const char* testData = "test";
+			opRet = rimBuffer.Append(strlen(testData), testData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+
+			/* GetData 인자 두 개가 모두 True인 경우 실패 테스트. */
+			opRet = rimBuffer.GetData(1, outputData, true, true);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_INVALID_USAGE == opRet);
+
+			/* 현재 있는 데이터보다 많은 데이터를 요구할 경우 실패 테스트. */
+			opRet = rimBuffer.GetData(strlen(testData) + 1, outputData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_INVALID_LEN == opRet);
 		}
 
 		// GetData시 옵션을 Peek을 주었을 때 제대로 작동하는지 테스트.
