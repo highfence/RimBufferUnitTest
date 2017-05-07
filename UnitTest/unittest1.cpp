@@ -250,7 +250,27 @@ namespace UnitTest
 		// GetData시 옵션을 MoveHeadOnly를 주었을 때 제대로 작동하는지 테스트.
 		TEST_METHOD(GetData_TestHeadMoveOnly)
 		{
-			
+			/* 초기 세팅. */
+			char emptyData[30] = { 0 };
+			char outputData[30] = { 0 };
+			const int testBufferSize = 15;
+			CumBuffer rimBuffer;
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
+
+			/* 테스트를 위한 데이터 삽입. */
+			const char* testData = "testdata";
+			auto opRet = rimBuffer.Append(strlen(testData), testData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+
+			/* MoveHeadOnly 테스트. ("test"만 빼어보기.) */
+			opRet = rimBuffer.GetData(strlen("test"), outputData, false, true);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+			Assert::AreEqual(outputData, emptyData);
+
+			/* 이후 Head가 제대로 이동했는지 테스트. ("Data"가 나와야함. ) */
+			opRet = rimBuffer.GetData(strlen("Data"), outputData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+			Assert::AreEqual(outputData, "Data");
 		}
 
 		// Append 함수가 로테이션한 뒤 상태에서 제대로 성공하는지 테스트.
