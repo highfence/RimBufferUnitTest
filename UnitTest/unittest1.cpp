@@ -333,13 +333,54 @@ namespace UnitTest
 		// GetData 함수가 로테이션 이후 제대로 성공하는지 테스트.
 		TEST_METHOD(GetData_Beyond_Rotate_Success)
 		{
+			char inputData[30] = { 0, };
+			char outputData[30] = { 0, };
+			const int testBufferSize = 15;
 
+			CumBuffer rimBuffer;
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
+
+			/* 로테이션 하도록 데이터를 넣고 뺴기. */
+			const char* dummyData = "DummyDummyDummy";
+			auto opRet = rimBuffer.Append(strlen(dummyData), dummyData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+
+			opRet = rimBuffer.GetData(10, outputData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+			Assert::AreEqual(outputData, "DummyDummy");
+
+			const char* secondDummyData = "Dummy";
+			opRet = rimBuffer.Append(strlen(secondDummyData), secondDummyData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+
+			/* GetData가 제대로 작동하는지 테스트. */
+			opRet = rimBuffer.GetData(10, outputData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+			Assert::AreEqual("DummyDummy", outputData);
 		}
 
 		// GetData 함수가 로테이션 이후 제대로 실패 코드를 뱉는지 테스트.
 		TEST_METHOD(GetData_Beyond_Rotate_Fail)
 		{
+			char inputData[30] = { 0, };
+			char outputData[30] = { 0, };
+			const int testBufferSize = 15;
 
+			CumBuffer rimBuffer;
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
+
+			/* 로테이션 하도록 데이터를 넣고 뺴기. */
+			const char* dummyData = "DummyDummyDummy";
+			auto opRet = rimBuffer.Append(strlen(dummyData), dummyData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+
+			opRet = rimBuffer.GetData(10, outputData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+			Assert::AreEqual(outputData, "DummyDummy");
+
+			/* GetData가 제대로 실패 메시지를 뱉는지 테스트. */
+			opRet = rimBuffer.GetData(11, outputData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_INVALID_LEN == opRet);
 		}
 
 
