@@ -258,7 +258,7 @@ namespace UnitTest
 			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
 
 			/* 테스트를 위한 데이터 삽입. */
-			const char* testData = "testdata";
+			const char* testData = "testData";
 			auto opRet = rimBuffer.Append(strlen(testData), testData);
 			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
 
@@ -273,21 +273,57 @@ namespace UnitTest
 			Assert::AreEqual(outputData, "Data");
 		}
 
-		// Append 함수가 로테이션한 뒤 상태에서 제대로 성공하는지 테스트.
+		// 로테이션한 뒤 상태에서 Append 함수가 제대로 성공하는지 테스트.
 		TEST_METHOD(Append_Beyond_Rotate_Success)
 		{
 			char inputData[30] = { 0, };
+			char outputData[30] = { 0, };
 			const int testBufferSize = 15;
 
 			CumBuffer rimBuffer;
 			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
 
 			/* 로테이션 하도록 데이터를 넣고 뺴기. */
+			const char* dummyData = "DummyDummyDummy";
+			auto opRet = rimBuffer.Append(strlen(dummyData), dummyData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+
+			opRet = rimBuffer.GetData(10, outputData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+			Assert::AreEqual(outputData, "DummyDummy");
+
+			/* Head와 Tail 위치 확인. */
+			Assert::IsTrue((uint64_t)15 == rimBuffer.GetCurTailPos());
+			Assert::IsTrue((uint64_t)10 == rimBuffer.GetCurHeadPos());
+
+			/* Append 후 Head와 Tail 위치 확인. */
+			const char* appendData = "Data";
+			opRet = rimBuffer.Append(strlen(appendData), appendData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+
+			Assert::IsTrue((uint64_t)4 == rimBuffer.GetCurTailPos());
+			Assert::IsTrue((uint64_t)10 == rimBuffer.GetCurHeadPos());
+
 		}
 
-		// Append 함수가 로테이션한 뒤 상태에서 제대로 실패를 뱉어내는 테스트.
+		// 로테이션한 뒤 상태에서 Append 함수가 제대로 실패를 뱉어내는지 테스트.
 		TEST_METHOD(Append_Beyond_Rotate_Fail)
 		{
+			char inputData[30] = { 0, };
+			char outputData[30] = { 0, };
+			const int testBufferSize = 15;
+
+			CumBuffer rimBuffer;
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == rimBuffer.Init(testBufferSize));
+
+			/* 로테이션 하도록 데이터를 넣고 뺴기. */
+			const char* dummyData = "DummyDummyDummy";
+			auto opRet = rimBuffer.Append(strlen(dummyData), dummyData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+
+			opRet = rimBuffer.GetData(10, outputData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
+			Assert::AreEqual(outputData, "DummyDummy");
 
 		}
 
