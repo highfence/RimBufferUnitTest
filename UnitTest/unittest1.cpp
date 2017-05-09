@@ -303,7 +303,6 @@ namespace UnitTest
 
 			Assert::IsTrue((uint64_t)4 == rimBuffer.GetCurTailPos());
 			Assert::IsTrue((uint64_t)10 == rimBuffer.GetCurHeadPos());
-
 		}
 
 		// 로테이션한 뒤 상태에서 Append 함수가 제대로 실패를 뱉어내는지 테스트.
@@ -325,6 +324,10 @@ namespace UnitTest
 			Assert::IsTrue(OP_RESULT::OP_RSLT_OK == opRet);
 			Assert::AreEqual(outputData, "DummyDummy");
 
+			/* 실패 테스트. */
+			const char* overData = "OverOverOver";
+			opRet = rimBuffer.Append(strlen(overData), overData);
+			Assert::IsTrue(OP_RESULT::OP_RSLT_BUFFER_FULL == opRet);
 		}
 
 		// GetData 함수가 로테이션 이후 제대로 성공하는지 테스트.
